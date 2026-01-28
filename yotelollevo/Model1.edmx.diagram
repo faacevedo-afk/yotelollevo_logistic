@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f91f4bad5c0b4c658b89c81db75a7e31" Name="Diagram1">
+        <EntityTypeShape EntityType="LogisticaDBModel.Comuna" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticaDBModel.Estado" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticaDBModel.Paquete" Width="1.5" PointX="3" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticaDBModel.Region" Width="1.5" PointX="1.5" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticaDBModel.Repartidor" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticaDBModel.Rol" Width="1.5" PointX="3.75" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticaDBModel.Ruta" Width="1.5" PointX="6" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticaDBModel.RutaPaquete" Width="1.5" PointX="8.25" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticaDBModel.Tienda" Width="1.5" PointX="0.75" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticaDBModel.Usuario" Width="1.5" PointX="6" PointY="9.5" IsExpanded="true" />
+        <AssociationConnector Association="LogisticaDBModel.FK_Comuna_Region" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_Paquete_ComunaEntrega" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_Tienda_Comuna" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_Paquete_EstadoPedido" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_Ruta_EstadoRuta" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_RutaPaquete_EstadoEntrega" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_Paquete_Tienda" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_RutaPaquete_Paquete" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_Ruta_Repartidor" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_Usuario_Rol" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_RutaPaquete_Ruta" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticaDBModel.FK_Usuario_Repartidor" />
+        <AssociationConnector Association="LogisticaDBModel.FK_Usuario_Tienda" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

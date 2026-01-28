@@ -1,0 +1,189 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+@using System.Web.Optimization
+@{
+    // Rol y nombre del usuario desde Session
+    var rol = (Session["Rol"] as string) ?? "";
+    var userName = (Session["UserName"] as string) ?? rol; // fallback
+}
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>@ViewBag.Title - SGI</title>
+
+    @Styles.Render("~/Content/Site.css")
+
+    
+
+    <!-- Font Awesome (si ya lo tienes en bundles, puedes quitar esto) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- DataTables (Bootstrap 5) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.min.css" />
+
+</head>
+
+<body class="sgi-body">
+
+    <!-- TOPBAR (igual a la foto: delgada, íconos) -->
+    <header class="sgi-topbar">
+        <div class="sgi-topbar-left">
+            <a class="sgi-brand" href="@Url.Action("Index","Home")">
+                <span class="sgi-logo"></span>
+                <span class="sgi-brand-text">SGI</span>
+            </a>
+        </div>
+
+        <div class="sgi-topbar-actions">
+            <button type="button" class="sgi-icon-btn" title="Ver/Ocultar menú" id="sidebarToggle">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <button type="button" class="sgi-icon-btn" title="Buscar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+
+            <button type="button" class="sgi-icon-btn" title="Pantalla completa" id="btnFullscreen">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+
+            <div class="sgi-bell">
+                <button type="button" class="sgi-icon-btn" title="Notificaciones">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="sgi-dot"></span>
+                </button>
+            </div>
+
+            <div class="sgi-user dropdown">
+                <a class="sgi-user-btn dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="sgi-user-avatar"><i class="fa-solid fa-user"></i></span>
+                    <span class="sgi-user-name">@userName</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="@Url.Action("Index","Home")">Perfil</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index","Home")">Configuración</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Logout","Account")">Cerrar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- LAYOUT -->
+    <div class="sgi-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sgi-sidebar" id="sgiSidebar">
+            <nav class="sgi-menu">
+
+                <a class="sgi-item" href="@Url.Action("Index","Home")">
+                    <i class="fa-solid fa-house"></i><span>Home</span>
+                </a>
+
+                <div class="sgi-section">
+                    <div class="sgi-section-title">Usuarios</div>
+
+                    <button class="sgi-item sgi-item-collapsible" type="button" data-bs-toggle="collapse" data-bs-target="#mUsuarios" aria-expanded="true">
+                        <i class="fa-solid fa-user-group"></i><span>Usuarios</span>
+                        <i class="fa-solid fa-chevron-down sgi-chevron"></i>
+                    </button>
+                    <div class="collapse show" id="mUsuarios">
+                        <a class="sgi-subitem" href="@Url.Action("Index","Usuarios")">Gestionar</a>
+                    </div>
+
+                    <a class="sgi-item" href="@Url.Action("Index","Perfiles")">
+                        <i class="fa-solid fa-id-badge"></i><span>Perfiles</span>
+                    </a>
+
+                    <a class="sgi-item" href="@Url.Action("Index","Accesos")">
+                        <i class="fa-solid fa-key"></i><span>Accesos</span>
+                    </a>
+                </div>
+
+                <div class="sgi-section">
+                    <div class="sgi-section-title">Operación</div>
+
+                    <a class="sgi-item" href="@Url.Action("Index","Tiendas")">
+                        <i class="fa-solid fa-store"></i><span>Tiendas</span>
+                    </a>
+
+                    <a class="sgi-item" href="@Url.Action("Index","Paquetes")">
+                        <i class="fa-solid fa-box"></i><span>Pedidos</span>
+                    </a>
+
+                    <a class="sgi-item" href="@Url.Action("Index","Rutas")">
+                        <i class="fa-solid fa-route"></i><span>Asignaciones</span>
+                    </a>
+
+                    <a class="sgi-item" href="@Url.Action("Index","Repartidors")">
+                        <i class="fa-solid fa-truck-fast"></i><span>Repartidores</span>
+                    </a>
+                </div>
+
+                <div class="sgi-section">
+                    <div class="sgi-section-title">Sistema</div>
+
+                    <a class="sgi-item" href="@Url.Action("Index","Configuraciones")">
+                        <i class="fa-solid fa-gear"></i><span>Configuraciones</span>
+                    </a>
+                </div>
+
+            </nav>
+        </aside>
+
+        <!-- CONTENT -->
+        <main class="sgi-content" id="sgiContent">
+            @RenderBody()
+        </main>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    @Scripts.Render("~/bundle/jquery")
+    @*@Scripts.Render("~/bundle/bootstrap")*@
+    @Scripts.Render("~/Scripts/bootstrap.bundle.min.js")
+
+
+    <!-- DataTables -->
+    <!-- Primero carga jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Luego carga DataTables -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Bootstrap 5 integration -->
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Sidebar toggle + fullscreen -->
+    <script>
+        (function () {
+            const toggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sgiSidebar');
+            const content = document.getElementById('sgiContent');
+
+            if (toggle && sidebar && content) {
+                toggle.addEventListener('click', function () {
+                    document.body.classList.toggle('sgi-collapsed');
+                });
+            }
+
+            const btnFs = document.getElementById('btnFullscreen');
+            if (btnFs) {
+                btnFs.addEventListener('click', async function () {
+                    try {
+                        if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+                        else await document.exitFullscreen();
+                    } catch (e) { }
+                });
+            }
+        })();
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

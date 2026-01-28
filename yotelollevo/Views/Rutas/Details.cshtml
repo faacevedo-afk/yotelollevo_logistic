@@ -1,0 +1,41 @@
+﻿@model yotelollevo.Ruta
+
+@{
+    ViewBag.Title = "Details";
+}
+
+@using System.Linq
+
+<h3>Paquetes asignados</h3>
+
+@if (Model.RutaPaquete != null && Model.RutaPaquete.Any())
+{
+    <table class="table table-bordered">
+        <tr>
+            <th>Orden</th>
+            <th>IdPaquete</th>
+            <th>Destinatario</th>
+            <th>Dirección</th>
+            <th>Tienda</th>
+            <th>Comuna</th>
+        </tr>
+
+        @foreach (var rp in (from x in Model.RutaPaquete
+                            orderby x.OrdenEntrega
+                            select x))
+        {
+            <tr>
+                <td>@rp.OrdenEntrega</td>
+                <td>@rp.IdPaquete</td>
+                <td>@rp.Paquete.NombreDestinatario</td>
+                <td>@rp.Paquete.DireccionEntrega</td>
+                <td>@rp.Paquete.Tienda.Nombre</td>
+                <td>@rp.Paquete.Comuna.Nombre</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p><em>Esta ruta aún no tiene paquetes asignados.</em></p>
+}

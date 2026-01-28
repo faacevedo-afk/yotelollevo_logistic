@@ -1,0 +1,49 @@
+﻿@model IEnumerable<yotelollevo.Ruta>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Nombre Repartidor
+        </th>
+        <th>
+            Estado Ruta
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FechaRuta)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Repartidor.Nombre)
+            @Html.DisplayFor(modelItem => item.Repartidor.ApellidoPaterno)
+
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Estado.Tipo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaRuta)
+        </td>
+        <td>
+            @Html.ActionLink("Editar Ruta", "Edit", new { id = item.IdRuta }) |
+            @Html.ActionLink("Detalle Ruta", "Details", new { id = item.IdRuta }) |
+            @Html.ActionLink("Elimina Ruta", "Delete", new { id = item.IdRuta })|
+            @Html.ActionLink("Asignar pedidos", "Asignar", new { id = item.IdRuta }) |
+
+        </td>
+    </tr>
+}
+
+</table>

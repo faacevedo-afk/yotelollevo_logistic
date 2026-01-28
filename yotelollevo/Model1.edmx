@@ -1,0 +1,841 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="LogisticaDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Comuna">
+          <Key>
+            <PropertyRef Name="IdComuna" />
+          </Key>
+          <Property Name="IdComuna" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdRegion" Type="int" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Estado">
+          <Key>
+            <PropertyRef Name="IdEstado" />
+          </Key>
+          <Property Name="IdEstado" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Tipo" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Paquete">
+          <Key>
+            <PropertyRef Name="IdPaquete" />
+          </Key>
+          <Property Name="IdPaquete" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdTienda" Type="int" Nullable="false" />
+          <Property Name="NombreDestinatario" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="DireccionEntrega" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="IdComunaEntrega" Type="int" Nullable="false" />
+          <Property Name="CelularDestinatario" Type="nvarchar" MaxLength="30" />
+          <Property Name="Comentario" Type="nvarchar" MaxLength="400" />
+          <Property Name="IdEstadoPedido" Type="int" Nullable="false" />
+          <Property Name="FechaCreacion" Type="datetime2" Precision="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Region">
+          <Key>
+            <PropertyRef Name="IdRegion" />
+          </Key>
+          <Property Name="IdRegion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Repartidor">
+          <Key>
+            <PropertyRef Name="IdRepartidor" />
+          </Key>
+          <Property Name="IdRepartidor" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ApellidoPaterno" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ApellidoMaterno" Type="nvarchar" MaxLength="100" />
+          <Property Name="Rut" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Correo" Type="nvarchar" MaxLength="150" />
+          <Property Name="Celular" Type="nvarchar" MaxLength="30" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+          <Property Name="FechaCreacion" Type="datetime2" Precision="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Rol">
+          <Key>
+            <PropertyRef Name="IdRol" />
+          </Key>
+          <Property Name="IdRol" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NombreRol" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Ruta">
+          <Key>
+            <PropertyRef Name="IdRuta" />
+          </Key>
+          <Property Name="IdRuta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FechaRuta" Type="date" Nullable="false" />
+          <Property Name="IdRepartidor" Type="int" Nullable="false" />
+          <Property Name="IdEstadoRuta" Type="int" Nullable="false" />
+          <Property Name="Observacion" Type="nvarchar" MaxLength="400" />
+          <Property Name="FechaCreacion" Type="datetime2" Precision="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RutaPaquete">
+          <Key>
+            <PropertyRef Name="IdRutaPaquete" />
+          </Key>
+          <Property Name="IdRutaPaquete" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdRuta" Type="int" Nullable="false" />
+          <Property Name="IdPaquete" Type="int" Nullable="false" />
+          <Property Name="OrdenEntrega" Type="int" Nullable="false" />
+          <Property Name="IdEstadoEntrega" Type="int" Nullable="false" />
+          <Property Name="HoraEvento" Type="datetime2" Precision="0" />
+          <Property Name="Observacion" Type="nvarchar" MaxLength="400" />
+        </EntityType>
+        <EntityType Name="Tienda">
+          <Key>
+            <PropertyRef Name="IdTienda" />
+          </Key>
+          <Property Name="IdTienda" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="Correo" Type="nvarchar" MaxLength="150" />
+          <Property Name="Direccion" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="Telefono" Type="nvarchar" MaxLength="30" />
+          <Property Name="IdComuna" Type="int" Nullable="false" />
+          <Property Name="Activa" Type="bit" Nullable="false" />
+          <Property Name="FechaCreacion" Type="datetime2" Precision="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="IdUsuario" />
+          </Key>
+          <Property Name="IdUsuario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="Login" Type="nvarchar" MaxLength="80" Nullable="false" />
+          <Property Name="ClaveHash" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="IdRol" Type="int" Nullable="false" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+          <Property Name="FechaCreacion" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="IdTienda" Type="int" />
+          <Property Name="IdRepartidor" Type="int" />
+        </EntityType>
+        <Association Name="FK_Comuna_Region">
+          <End Role="Region" Type="Self.Region" Multiplicity="1" />
+          <End Role="Comuna" Type="Self.Comuna" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Region">
+              <PropertyRef Name="IdRegion" />
+            </Principal>
+            <Dependent Role="Comuna">
+              <PropertyRef Name="IdRegion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Paquete_ComunaEntrega">
+          <End Role="Comuna" Type="Self.Comuna" Multiplicity="1" />
+          <End Role="Paquete" Type="Self.Paquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comuna">
+              <PropertyRef Name="IdComuna" />
+            </Principal>
+            <Dependent Role="Paquete">
+              <PropertyRef Name="IdComunaEntrega" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Paquete_EstadoPedido">
+          <End Role="Estado" Type="Self.Estado" Multiplicity="1" />
+          <End Role="Paquete" Type="Self.Paquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estado">
+              <PropertyRef Name="IdEstado" />
+            </Principal>
+            <Dependent Role="Paquete">
+              <PropertyRef Name="IdEstadoPedido" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Paquete_Tienda">
+          <End Role="Tienda" Type="Self.Tienda" Multiplicity="1" />
+          <End Role="Paquete" Type="Self.Paquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tienda">
+              <PropertyRef Name="IdTienda" />
+            </Principal>
+            <Dependent Role="Paquete">
+              <PropertyRef Name="IdTienda" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ruta_EstadoRuta">
+          <End Role="Estado" Type="Self.Estado" Multiplicity="1" />
+          <End Role="Ruta" Type="Self.Ruta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estado">
+              <PropertyRef Name="IdEstado" />
+            </Principal>
+            <Dependent Role="Ruta">
+              <PropertyRef Name="IdEstadoRuta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ruta_Repartidor">
+          <End Role="Repartidor" Type="Self.Repartidor" Multiplicity="1" />
+          <End Role="Ruta" Type="Self.Ruta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Repartidor">
+              <PropertyRef Name="IdRepartidor" />
+            </Principal>
+            <Dependent Role="Ruta">
+              <PropertyRef Name="IdRepartidor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RutaPaquete_EstadoEntrega">
+          <End Role="Estado" Type="Self.Estado" Multiplicity="1" />
+          <End Role="RutaPaquete" Type="Self.RutaPaquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estado">
+              <PropertyRef Name="IdEstado" />
+            </Principal>
+            <Dependent Role="RutaPaquete">
+              <PropertyRef Name="IdEstadoEntrega" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RutaPaquete_Paquete">
+          <End Role="Paquete" Type="Self.Paquete" Multiplicity="1" />
+          <End Role="RutaPaquete" Type="Self.RutaPaquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Paquete">
+              <PropertyRef Name="IdPaquete" />
+            </Principal>
+            <Dependent Role="RutaPaquete">
+              <PropertyRef Name="IdPaquete" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RutaPaquete_Ruta">
+          <End Role="Ruta" Type="Self.Ruta" Multiplicity="1" />
+          <End Role="RutaPaquete" Type="Self.RutaPaquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ruta">
+              <PropertyRef Name="IdRuta" />
+            </Principal>
+            <Dependent Role="RutaPaquete">
+              <PropertyRef Name="IdRuta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tienda_Comuna">
+          <End Role="Comuna" Type="Self.Comuna" Multiplicity="1" />
+          <End Role="Tienda" Type="Self.Tienda" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comuna">
+              <PropertyRef Name="IdComuna" />
+            </Principal>
+            <Dependent Role="Tienda">
+              <PropertyRef Name="IdComuna" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuario_Repartidor">
+          <End Role="Repartidor" Type="Self.Repartidor" Multiplicity="0..1" />
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Repartidor">
+              <PropertyRef Name="IdRepartidor" />
+            </Principal>
+            <Dependent Role="Usuario">
+              <PropertyRef Name="IdRepartidor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuario_Rol">
+          <End Role="Rol" Type="Self.Rol" Multiplicity="1" />
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rol">
+              <PropertyRef Name="IdRol" />
+            </Principal>
+            <Dependent Role="Usuario">
+              <PropertyRef Name="IdRol" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuario_Tienda">
+          <End Role="Tienda" Type="Self.Tienda" Multiplicity="0..1" />
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tienda">
+              <PropertyRef Name="IdTienda" />
+            </Principal>
+            <Dependent Role="Usuario">
+              <PropertyRef Name="IdTienda" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="LogisticaDBModelStoreContainer">
+          <EntitySet Name="Comuna" EntityType="Self.Comuna" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Estado" EntityType="Self.Estado" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Paquete" EntityType="Self.Paquete" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Region" EntityType="Self.Region" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Repartidor" EntityType="Self.Repartidor" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rol" EntityType="Self.Rol" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Ruta" EntityType="Self.Ruta" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RutaPaquete" EntityType="Self.RutaPaquete" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tienda" EntityType="Self.Tienda" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Comuna_Region" Association="Self.FK_Comuna_Region">
+            <End Role="Region" EntitySet="Region" />
+            <End Role="Comuna" EntitySet="Comuna" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Paquete_ComunaEntrega" Association="Self.FK_Paquete_ComunaEntrega">
+            <End Role="Comuna" EntitySet="Comuna" />
+            <End Role="Paquete" EntitySet="Paquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Paquete_EstadoPedido" Association="Self.FK_Paquete_EstadoPedido">
+            <End Role="Estado" EntitySet="Estado" />
+            <End Role="Paquete" EntitySet="Paquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Paquete_Tienda" Association="Self.FK_Paquete_Tienda">
+            <End Role="Tienda" EntitySet="Tienda" />
+            <End Role="Paquete" EntitySet="Paquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ruta_EstadoRuta" Association="Self.FK_Ruta_EstadoRuta">
+            <End Role="Estado" EntitySet="Estado" />
+            <End Role="Ruta" EntitySet="Ruta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ruta_Repartidor" Association="Self.FK_Ruta_Repartidor">
+            <End Role="Repartidor" EntitySet="Repartidor" />
+            <End Role="Ruta" EntitySet="Ruta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RutaPaquete_EstadoEntrega" Association="Self.FK_RutaPaquete_EstadoEntrega">
+            <End Role="Estado" EntitySet="Estado" />
+            <End Role="RutaPaquete" EntitySet="RutaPaquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RutaPaquete_Paquete" Association="Self.FK_RutaPaquete_Paquete">
+            <End Role="Paquete" EntitySet="Paquete" />
+            <End Role="RutaPaquete" EntitySet="RutaPaquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RutaPaquete_Ruta" Association="Self.FK_RutaPaquete_Ruta">
+            <End Role="Ruta" EntitySet="Ruta" />
+            <End Role="RutaPaquete" EntitySet="RutaPaquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tienda_Comuna" Association="Self.FK_Tienda_Comuna">
+            <End Role="Comuna" EntitySet="Comuna" />
+            <End Role="Tienda" EntitySet="Tienda" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuario_Repartidor" Association="Self.FK_Usuario_Repartidor">
+            <End Role="Repartidor" EntitySet="Repartidor" />
+            <End Role="Usuario" EntitySet="Usuario" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuario_Rol" Association="Self.FK_Usuario_Rol">
+            <End Role="Rol" EntitySet="Rol" />
+            <End Role="Usuario" EntitySet="Usuario" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuario_Tienda" Association="Self.FK_Usuario_Tienda">
+            <End Role="Tienda" EntitySet="Tienda" />
+            <End Role="Usuario" EntitySet="Usuario" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="LogisticaDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Comuna">
+          <Key>
+            <PropertyRef Name="IdComuna" />
+          </Key>
+          <Property Name="IdComuna" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdRegion" Type="Int32" Nullable="false" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Region" Relationship="Self.FK_Comuna_Region" FromRole="Comuna" ToRole="Region" />
+          <NavigationProperty Name="Paquete" Relationship="Self.FK_Paquete_ComunaEntrega" FromRole="Comuna" ToRole="Paquete" />
+          <NavigationProperty Name="Tienda" Relationship="Self.FK_Tienda_Comuna" FromRole="Comuna" ToRole="Tienda" />
+        </EntityType>
+        <EntityType Name="Estado">
+          <Key>
+            <PropertyRef Name="IdEstado" />
+          </Key>
+          <Property Name="IdEstado" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Tipo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Paquete" Relationship="Self.FK_Paquete_EstadoPedido" FromRole="Estado" ToRole="Paquete" />
+          <NavigationProperty Name="Ruta" Relationship="Self.FK_Ruta_EstadoRuta" FromRole="Estado" ToRole="Ruta" />
+          <NavigationProperty Name="RutaPaquete" Relationship="Self.FK_RutaPaquete_EstadoEntrega" FromRole="Estado" ToRole="RutaPaquete" />
+        </EntityType>
+        <EntityType Name="Paquete">
+          <Key>
+            <PropertyRef Name="IdPaquete" />
+          </Key>
+          <Property Name="IdPaquete" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdTienda" Type="Int32" Nullable="false" />
+          <Property Name="NombreDestinatario" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DireccionEntrega" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IdComunaEntrega" Type="Int32" Nullable="false" />
+          <Property Name="CelularDestinatario" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Comentario" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="IdEstadoPedido" Type="Int32" Nullable="false" />
+          <Property Name="FechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Comuna" Relationship="Self.FK_Paquete_ComunaEntrega" FromRole="Paquete" ToRole="Comuna" />
+          <NavigationProperty Name="Estado" Relationship="Self.FK_Paquete_EstadoPedido" FromRole="Paquete" ToRole="Estado" />
+          <NavigationProperty Name="Tienda" Relationship="Self.FK_Paquete_Tienda" FromRole="Paquete" ToRole="Tienda" />
+          <NavigationProperty Name="RutaPaquete" Relationship="Self.FK_RutaPaquete_Paquete" FromRole="Paquete" ToRole="RutaPaquete" />
+        </EntityType>
+        <EntityType Name="Region">
+          <Key>
+            <PropertyRef Name="IdRegion" />
+          </Key>
+          <Property Name="IdRegion" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Comuna" Relationship="Self.FK_Comuna_Region" FromRole="Region" ToRole="Comuna" />
+        </EntityType>
+        <EntityType Name="Repartidor">
+          <Key>
+            <PropertyRef Name="IdRepartidor" />
+          </Key>
+          <Property Name="IdRepartidor" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ApellidoPaterno" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ApellidoMaterno" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Rut" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Correo" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Celular" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="FechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Ruta" Relationship="Self.FK_Ruta_Repartidor" FromRole="Repartidor" ToRole="Ruta" />
+          <NavigationProperty Name="Usuarios" Relationship="LogisticaDBModel.FK_Usuario_Repartidor" FromRole="Repartidor" ToRole="Usuario" />
+        </EntityType>
+        <EntityType Name="Rol">
+          <Key>
+            <PropertyRef Name="IdRol" />
+          </Key>
+          <Property Name="IdRol" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombreRol" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Usuario" Relationship="Self.FK_Usuario_Rol" FromRole="Rol" ToRole="Usuario" />
+        </EntityType>
+        <EntityType Name="Ruta">
+          <Key>
+            <PropertyRef Name="IdRuta" />
+          </Key>
+          <Property Name="IdRuta" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FechaRuta" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="IdRepartidor" Type="Int32" Nullable="false" />
+          <Property Name="IdEstadoRuta" Type="Int32" Nullable="false" />
+          <Property Name="Observacion" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="FechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Estado" Relationship="Self.FK_Ruta_EstadoRuta" FromRole="Ruta" ToRole="Estado" />
+          <NavigationProperty Name="Repartidor" Relationship="Self.FK_Ruta_Repartidor" FromRole="Ruta" ToRole="Repartidor" />
+          <NavigationProperty Name="RutaPaquete" Relationship="Self.FK_RutaPaquete_Ruta" FromRole="Ruta" ToRole="RutaPaquete" />
+        </EntityType>
+        <EntityType Name="RutaPaquete">
+          <Key>
+            <PropertyRef Name="IdRutaPaquete" />
+          </Key>
+          <Property Name="IdRutaPaquete" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdRuta" Type="Int32" Nullable="false" />
+          <Property Name="IdPaquete" Type="Int32" Nullable="false" />
+          <Property Name="OrdenEntrega" Type="Int32" Nullable="false" />
+          <Property Name="IdEstadoEntrega" Type="Int32" Nullable="false" />
+          <Property Name="HoraEvento" Type="DateTime" Precision="0" />
+          <Property Name="Observacion" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Estado" Relationship="Self.FK_RutaPaquete_EstadoEntrega" FromRole="RutaPaquete" ToRole="Estado" />
+          <NavigationProperty Name="Paquete" Relationship="Self.FK_RutaPaquete_Paquete" FromRole="RutaPaquete" ToRole="Paquete" />
+          <NavigationProperty Name="Ruta" Relationship="Self.FK_RutaPaquete_Ruta" FromRole="RutaPaquete" ToRole="Ruta" />
+        </EntityType>
+        <EntityType Name="Tienda">
+          <Key>
+            <PropertyRef Name="IdTienda" />
+          </Key>
+          <Property Name="IdTienda" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Correo" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Direccion" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Telefono" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="IdComuna" Type="Int32" Nullable="false" />
+          <Property Name="Activa" Type="Boolean" Nullable="false" />
+          <Property Name="FechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Comuna" Relationship="Self.FK_Tienda_Comuna" FromRole="Tienda" ToRole="Comuna" />
+          <NavigationProperty Name="Paquete" Relationship="Self.FK_Paquete_Tienda" FromRole="Tienda" ToRole="Paquete" />
+          <NavigationProperty Name="Usuarios" Relationship="LogisticaDBModel.FK_Usuario_Tienda" FromRole="Tienda" ToRole="Usuario" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="IdUsuario" />
+          </Key>
+          <Property Name="IdUsuario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Login" Type="String" MaxLength="80" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ClaveHash" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IdRol" Type="Int32" Nullable="false" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="FechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Rol" Relationship="Self.FK_Usuario_Rol" FromRole="Usuario" ToRole="Rol" />
+          <Property Name="IdTienda" Type="Int32" />
+          <Property Name="IdRepartidor" Type="Int32" />
+          <NavigationProperty Name="Repartidor" Relationship="LogisticaDBModel.FK_Usuario_Repartidor" FromRole="Usuario" ToRole="Repartidor" />
+          <NavigationProperty Name="Tienda" Relationship="LogisticaDBModel.FK_Usuario_Tienda" FromRole="Usuario" ToRole="Tienda" />
+        </EntityType>
+        <Association Name="FK_Comuna_Region">
+          <End Role="Region" Type="Self.Region" Multiplicity="1" />
+          <End Role="Comuna" Type="Self.Comuna" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Region">
+              <PropertyRef Name="IdRegion" />
+            </Principal>
+            <Dependent Role="Comuna">
+              <PropertyRef Name="IdRegion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Paquete_ComunaEntrega">
+          <End Role="Comuna" Type="Self.Comuna" Multiplicity="1" />
+          <End Role="Paquete" Type="Self.Paquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comuna">
+              <PropertyRef Name="IdComuna" />
+            </Principal>
+            <Dependent Role="Paquete">
+              <PropertyRef Name="IdComunaEntrega" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tienda_Comuna">
+          <End Role="Comuna" Type="Self.Comuna" Multiplicity="1" />
+          <End Role="Tienda" Type="Self.Tienda" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comuna">
+              <PropertyRef Name="IdComuna" />
+            </Principal>
+            <Dependent Role="Tienda">
+              <PropertyRef Name="IdComuna" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Paquete_EstadoPedido">
+          <End Role="Estado" Type="Self.Estado" Multiplicity="1" />
+          <End Role="Paquete" Type="Self.Paquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estado">
+              <PropertyRef Name="IdEstado" />
+            </Principal>
+            <Dependent Role="Paquete">
+              <PropertyRef Name="IdEstadoPedido" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ruta_EstadoRuta">
+          <End Role="Estado" Type="Self.Estado" Multiplicity="1" />
+          <End Role="Ruta" Type="Self.Ruta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estado">
+              <PropertyRef Name="IdEstado" />
+            </Principal>
+            <Dependent Role="Ruta">
+              <PropertyRef Name="IdEstadoRuta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RutaPaquete_EstadoEntrega">
+          <End Role="Estado" Type="Self.Estado" Multiplicity="1" />
+          <End Role="RutaPaquete" Type="Self.RutaPaquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estado">
+              <PropertyRef Name="IdEstado" />
+            </Principal>
+            <Dependent Role="RutaPaquete">
+              <PropertyRef Name="IdEstadoEntrega" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Paquete_Tienda">
+          <End Role="Tienda" Type="Self.Tienda" Multiplicity="1" />
+          <End Role="Paquete" Type="Self.Paquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tienda">
+              <PropertyRef Name="IdTienda" />
+            </Principal>
+            <Dependent Role="Paquete">
+              <PropertyRef Name="IdTienda" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RutaPaquete_Paquete">
+          <End Role="Paquete" Type="Self.Paquete" Multiplicity="1" />
+          <End Role="RutaPaquete" Type="Self.RutaPaquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Paquete">
+              <PropertyRef Name="IdPaquete" />
+            </Principal>
+            <Dependent Role="RutaPaquete">
+              <PropertyRef Name="IdPaquete" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ruta_Repartidor">
+          <End Role="Repartidor" Type="Self.Repartidor" Multiplicity="1" />
+          <End Role="Ruta" Type="Self.Ruta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Repartidor">
+              <PropertyRef Name="IdRepartidor" />
+            </Principal>
+            <Dependent Role="Ruta">
+              <PropertyRef Name="IdRepartidor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuario_Rol">
+          <End Role="Rol" Type="Self.Rol" Multiplicity="1" />
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rol">
+              <PropertyRef Name="IdRol" />
+            </Principal>
+            <Dependent Role="Usuario">
+              <PropertyRef Name="IdRol" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RutaPaquete_Ruta">
+          <End Role="Ruta" Type="Self.Ruta" Multiplicity="1" />
+          <End Role="RutaPaquete" Type="Self.RutaPaquete" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ruta">
+              <PropertyRef Name="IdRuta" />
+            </Principal>
+            <Dependent Role="RutaPaquete">
+              <PropertyRef Name="IdRuta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="LogisticaDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Comuna" EntityType="Self.Comuna" />
+          <EntitySet Name="Estado" EntityType="Self.Estado" />
+          <EntitySet Name="Paquete" EntityType="Self.Paquete" />
+          <EntitySet Name="Region" EntityType="Self.Region" />
+          <EntitySet Name="Repartidor" EntityType="Self.Repartidor" />
+          <EntitySet Name="Rol" EntityType="Self.Rol" />
+          <EntitySet Name="Ruta" EntityType="Self.Ruta" />
+          <EntitySet Name="RutaPaquete" EntityType="Self.RutaPaquete" />
+          <EntitySet Name="Tienda" EntityType="Self.Tienda" />
+          <EntitySet Name="Usuario" EntityType="Self.Usuario" />
+          <AssociationSet Name="FK_Comuna_Region" Association="Self.FK_Comuna_Region">
+            <End Role="Region" EntitySet="Region" />
+            <End Role="Comuna" EntitySet="Comuna" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Paquete_ComunaEntrega" Association="Self.FK_Paquete_ComunaEntrega">
+            <End Role="Comuna" EntitySet="Comuna" />
+            <End Role="Paquete" EntitySet="Paquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tienda_Comuna" Association="Self.FK_Tienda_Comuna">
+            <End Role="Comuna" EntitySet="Comuna" />
+            <End Role="Tienda" EntitySet="Tienda" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Paquete_EstadoPedido" Association="Self.FK_Paquete_EstadoPedido">
+            <End Role="Estado" EntitySet="Estado" />
+            <End Role="Paquete" EntitySet="Paquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ruta_EstadoRuta" Association="Self.FK_Ruta_EstadoRuta">
+            <End Role="Estado" EntitySet="Estado" />
+            <End Role="Ruta" EntitySet="Ruta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RutaPaquete_EstadoEntrega" Association="Self.FK_RutaPaquete_EstadoEntrega">
+            <End Role="Estado" EntitySet="Estado" />
+            <End Role="RutaPaquete" EntitySet="RutaPaquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Paquete_Tienda" Association="Self.FK_Paquete_Tienda">
+            <End Role="Tienda" EntitySet="Tienda" />
+            <End Role="Paquete" EntitySet="Paquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RutaPaquete_Paquete" Association="Self.FK_RutaPaquete_Paquete">
+            <End Role="Paquete" EntitySet="Paquete" />
+            <End Role="RutaPaquete" EntitySet="RutaPaquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ruta_Repartidor" Association="Self.FK_Ruta_Repartidor">
+            <End Role="Repartidor" EntitySet="Repartidor" />
+            <End Role="Ruta" EntitySet="Ruta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuario_Rol" Association="Self.FK_Usuario_Rol">
+            <End Role="Rol" EntitySet="Rol" />
+            <End Role="Usuario" EntitySet="Usuario" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RutaPaquete_Ruta" Association="Self.FK_RutaPaquete_Ruta">
+            <End Role="Ruta" EntitySet="Ruta" />
+            <End Role="RutaPaquete" EntitySet="RutaPaquete" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuario_Repartidor" Association="LogisticaDBModel.FK_Usuario_Repartidor">
+            <End Role="Repartidor" EntitySet="Repartidor" />
+            <End Role="Usuario" EntitySet="Usuario" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuario_Tienda" Association="LogisticaDBModel.FK_Usuario_Tienda">
+            <End Role="Tienda" EntitySet="Tienda" />
+            <End Role="Usuario" EntitySet="Usuario" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="FK_Usuario_Repartidor">
+          <End Type="LogisticaDBModel.Repartidor" Role="Repartidor" Multiplicity="0..1" />
+          <End Type="LogisticaDBModel.Usuario" Role="Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Repartidor">
+              <PropertyRef Name="IdRepartidor" />
+            </Principal>
+            <Dependent Role="Usuario">
+              <PropertyRef Name="IdRepartidor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuario_Tienda">
+          <End Type="LogisticaDBModel.Tienda" Role="Tienda" Multiplicity="0..1" />
+          <End Type="LogisticaDBModel.Usuario" Role="Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tienda">
+              <PropertyRef Name="IdTienda" />
+            </Principal>
+            <Dependent Role="Usuario">
+              <PropertyRef Name="IdTienda" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="LogisticaDBModelStoreContainer" CdmEntityContainer="LogisticaDBEntities">
+          <EntitySetMapping Name="Comuna">
+            <EntityTypeMapping TypeName="LogisticaDBModel.Comuna">
+              <MappingFragment StoreEntitySet="Comuna">
+                <ScalarProperty Name="IdComuna" ColumnName="IdComuna" />
+                <ScalarProperty Name="IdRegion" ColumnName="IdRegion" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Estado">
+            <EntityTypeMapping TypeName="LogisticaDBModel.Estado">
+              <MappingFragment StoreEntitySet="Estado">
+                <ScalarProperty Name="IdEstado" ColumnName="IdEstado" />
+                <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Paquete">
+            <EntityTypeMapping TypeName="LogisticaDBModel.Paquete">
+              <MappingFragment StoreEntitySet="Paquete">
+                <ScalarProperty Name="IdPaquete" ColumnName="IdPaquete" />
+                <ScalarProperty Name="IdTienda" ColumnName="IdTienda" />
+                <ScalarProperty Name="NombreDestinatario" ColumnName="NombreDestinatario" />
+                <ScalarProperty Name="DireccionEntrega" ColumnName="DireccionEntrega" />
+                <ScalarProperty Name="IdComunaEntrega" ColumnName="IdComunaEntrega" />
+                <ScalarProperty Name="CelularDestinatario" ColumnName="CelularDestinatario" />
+                <ScalarProperty Name="Comentario" ColumnName="Comentario" />
+                <ScalarProperty Name="IdEstadoPedido" ColumnName="IdEstadoPedido" />
+                <ScalarProperty Name="FechaCreacion" ColumnName="FechaCreacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Region">
+            <EntityTypeMapping TypeName="LogisticaDBModel.Region">
+              <MappingFragment StoreEntitySet="Region">
+                <ScalarProperty Name="IdRegion" ColumnName="IdRegion" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Repartidor">
+            <EntityTypeMapping TypeName="LogisticaDBModel.Repartidor">
+              <MappingFragment StoreEntitySet="Repartidor">
+                <ScalarProperty Name="IdRepartidor" ColumnName="IdRepartidor" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="ApellidoPaterno" ColumnName="ApellidoPaterno" />
+                <ScalarProperty Name="ApellidoMaterno" ColumnName="ApellidoMaterno" />
+                <ScalarProperty Name="Rut" ColumnName="Rut" />
+                <ScalarProperty Name="Correo" ColumnName="Correo" />
+                <ScalarProperty Name="Celular" ColumnName="Celular" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="FechaCreacion" ColumnName="FechaCreacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rol">
+            <EntityTypeMapping TypeName="LogisticaDBModel.Rol">
+              <MappingFragment StoreEntitySet="Rol">
+                <ScalarProperty Name="IdRol" ColumnName="IdRol" />
+                <ScalarProperty Name="NombreRol" ColumnName="NombreRol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ruta">
+            <EntityTypeMapping TypeName="LogisticaDBModel.Ruta">
+              <MappingFragment StoreEntitySet="Ruta">
+                <ScalarProperty Name="IdRuta" ColumnName="IdRuta" />
+                <ScalarProperty Name="FechaRuta" ColumnName="FechaRuta" />
+                <ScalarProperty Name="IdRepartidor" ColumnName="IdRepartidor" />
+                <ScalarProperty Name="IdEstadoRuta" ColumnName="IdEstadoRuta" />
+                <ScalarProperty Name="Observacion" ColumnName="Observacion" />
+                <ScalarProperty Name="FechaCreacion" ColumnName="FechaCreacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RutaPaquete">
+            <EntityTypeMapping TypeName="LogisticaDBModel.RutaPaquete">
+              <MappingFragment StoreEntitySet="RutaPaquete">
+                <ScalarProperty Name="IdRutaPaquete" ColumnName="IdRutaPaquete" />
+                <ScalarProperty Name="IdRuta" ColumnName="IdRuta" />
+                <ScalarProperty Name="IdPaquete" ColumnName="IdPaquete" />
+                <ScalarProperty Name="OrdenEntrega" ColumnName="OrdenEntrega" />
+                <ScalarProperty Name="IdEstadoEntrega" ColumnName="IdEstadoEntrega" />
+                <ScalarProperty Name="HoraEvento" ColumnName="HoraEvento" />
+                <ScalarProperty Name="Observacion" ColumnName="Observacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tienda">
+            <EntityTypeMapping TypeName="LogisticaDBModel.Tienda">
+              <MappingFragment StoreEntitySet="Tienda">
+                <ScalarProperty Name="IdTienda" ColumnName="IdTienda" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Correo" ColumnName="Correo" />
+                <ScalarProperty Name="Direccion" ColumnName="Direccion" />
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+                <ScalarProperty Name="IdComuna" ColumnName="IdComuna" />
+                <ScalarProperty Name="Activa" ColumnName="Activa" />
+                <ScalarProperty Name="FechaCreacion" ColumnName="FechaCreacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usuario">
+            <EntityTypeMapping TypeName="LogisticaDBModel.Usuario">
+              <MappingFragment StoreEntitySet="Usuario">
+                <ScalarProperty Name="IdRepartidor" ColumnName="IdRepartidor" />
+                <ScalarProperty Name="IdTienda" ColumnName="IdTienda" />
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="ClaveHash" ColumnName="ClaveHash" />
+                <ScalarProperty Name="IdRol" ColumnName="IdRol" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="FechaCreacion" ColumnName="FechaCreacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

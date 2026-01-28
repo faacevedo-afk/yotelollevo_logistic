@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "Asignar";
+}
+
+@model yotelollevo.ViewsModel.AsignarPaquetesVM
+
+@using (Html.BeginForm("Asignar", "Rutas", FormMethod.Post))
+
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdRuta)
+
+    <h3>Pendientes</h3>
+    <table class="table table-striped">
+        <tr>
+            <th></th>
+            <th>Tienda</th>
+            <th>Destinatario</th>
+            <th>Dirección</th>
+            <th>Comuna</th>
+        </tr>
+
+        @foreach (var p in Model.Pendientes)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" name="PaquetesSeleccionados" value="@p.IdPaquete" />
+                </td>
+                <td>@p.Tienda</td>
+                <td>@p.Destinatario</td>
+                <td>@p.Direccion</td>
+                <td>@p.Comuna</td>
+            </tr>
+        }
+    </table>
+    <button type="submit" class="btn btn-primary">@Html.ActionLink("<- Volver", "Index", "Rutas", new { area = "" }, new { @class = "nav-link" })</button>
+    <button type="submit" class="btn btn-primary">Guardar asignación</button>
+    
+}
+
+<hr />
+
+<h3>Ya asignados en esta ruta</h3>
+<table class="table table-bordered">
+    <tr>
+        <th>Orden</th>
+        <th>IdPaquete</th>
+        <th>Tienda</th>
+        <th>Destinatario</th>
+        <th>Dirección</th>
+        <th>Comuna</th>
+    </tr>
+
+    @{
+        int orden = 0;
+    }
+    @foreach (var p in Model.YaEnRuta)
+    {
+        orden++;
+        <tr>
+            <td>@orden</td>
+            <td>@p.IdPaquete</td>
+            <td>@p.Tienda</td>
+            <td>@p.Destinatario</td>
+            <td>@p.Direccion</td>
+            <td>@p.Comuna</td>
+        </tr>
+    }
+</table>
+
+

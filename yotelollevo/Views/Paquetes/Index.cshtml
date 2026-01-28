@@ -1,0 +1,150 @@
+﻿@model IEnumerable<yotelollevo.Paquete>
+
+@{
+    var tiendas = ViewBag.Tiendas as IEnumerable<string> ?? Enumerable.Empty<string>();
+    var estados = ViewBag.Estados as IEnumerable<string> ?? Enumerable.Empty<string>();
+}
+
+<h1 class="sgi-page-title">Gestionar Paquetes</h1>
+<hr class="sgi-hr" />
+
+<div class="sgi-actions">
+    <a class="btn btn-sgi" href="@Url.Action("Create","Paquetes")">Agregar</a>
+
+    <select id="filtroTienda" class="form-select" style="width:220px;">
+        <option value="">Seleccione Tienda</option>
+        @foreach (var t in tiendas)
+        {
+            <option value="@t">@t</option>
+        }
+    </select>
+
+    <select id="filtroEstado" class="form-select" style="width:220px;">
+        <option value="">Seleccione Estado</option>
+        @foreach (var e in estados)
+        {
+            <option value="@e">@e</option>
+        }
+    </select>
+
+    <input id="buscador" class="form-control" style="width:260px;" placeholder="Buscar" />
+
+    <button id="btnBuscar" type="button" class="btn btn-primary">
+        Buscar
+    </button>
+
+    <button id="btnLimpiar" type="button" class="btn btn-outline-secondary">
+        Limpiar
+    </button>
+</div>
+
+<div class="table-responsive">
+    <table id="tablaPaquetes" class="table table-striped table-bordered w-100">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Destinatario</th>
+                <th>Dirección</th>
+                <th>Comuna</th>
+                <th>Tienda</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.IdPaquete</td>
+                    <td>@item.NombreDestinatario</td>
+                    <td>@item.DireccionEntrega</td>
+                    <td>@item.Comuna.Nombre</td>
+                    <td>@item.Tienda.Nombre</td>
+                    <td>@item.Estado.Nombre</td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-sm btn-outline-primary"
+                           href="@Url.Action("Edit", "Paquetes", new { id = item.IdPaquete })">Editar Ruta</a>
+
+                        <a class="btn btn-sm btn-outline-secondary"
+                           href="@Url.Action("Details","Paquetes", new { id = item.IdPaquete })">Ver</a>
+
+                        <a class="btn btn-sm btn-outline-danger"
+                           href="@Url.Action("Delete","Paquetes", new { id = item.IdPaquete })">Eliminar</a>
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- 👇👇 AQUÍ VA EXACTAMENTE 👇👇 -->
+
+@section scripts {
+    <script>
+        $(function () {
+
+            console.log("JS listo ✅");
+
+            // Validaciones rápidas
+            if (!$('#tablaPaquetes').length) { console.error("No existe #tablaPaquetes"); return; }
+            if (!$.fn.DataTable) { console.error("DataTables jQuery no cargó"); return; }
+
+            const dt = $('#tablaPaquetes').DataTable({
+                dom: "rtip",
+                paging: true,
+                searching: true,
+                info: true,
+                scrollX: true,
+                pageLength: 10
+            });
+
+            function aplicarFiltros() {
+                const tienda = $('#filtroTienda').val() || '';
+                const estado = $('#filtroEstado').val() || '';
+                const texto = $('#buscador').val() || '';
+
+                // Ajusta índices si cambian
+                dt.column(4).search(tienda);
+                dt.column(5).search(estado);
+                dt.search(texto);
+                dt.draw();
+
+                console.log("Filtros aplicados:", { tienda, estado, texto });
+            }
+
+            $('#btnBuscar').off('click').on('click', function () {
+                console.log("click buscar");
+                aplicarFiltros();
+            });
+
+            $('#btnLimpiar').off('click').on('click', function () {
+                console.log("click limpiar");
+                $('#filtroTienda').val('');
+                $('#filtroEstado').val('');
+                $('#buscador').val('');
+
+                dt.column(4).search('');
+                dt.column(5).search('');
+                dt.search('');
+                dt.draw();
+            });
+
+            // Enter en el buscador
+            $('#buscador').off('keydown').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    aplicarFiltros();
+                }
+            });
+
+        });
+    </script>
+}
+
+}
+
+
+
+

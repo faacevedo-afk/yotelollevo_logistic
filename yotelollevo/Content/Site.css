@@ -1,0 +1,330 @@
+﻿/* ====== BASE ====== */
+:root {
+    --sgi-bg: #0f3c3b; /* sidebar verde petróleo (foto) */
+    --sgi-bg-2: #0c3433;
+    --sgi-top: #123f3e; /* topbar */
+    --sgi-text: #e7f0ef;
+    --sgi-muted: #b7cbc9;
+    --sgi-line: #d9dfe0;
+    --sgi-page: #f5f7f8;
+    --sgi-card: #ffffff;
+    --sgi-accent: #21b6ac; /* botones/acentos */
+}
+
+.sgi-body {
+    margin: 0;
+    background: var(--sgi-page);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* ====== TOPBAR ====== */
+.sgi-topbar {
+    height: 56px;
+    background: var(--sgi-top);
+    color: var(--sgi-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 0 rgba(0,0,0,.15);
+}
+
+.sgi-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--sgi-text);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: .2px;
+}
+
+.sgi-logo {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #7bdc5b, #2fbf9b);
+    display: inline-block;
+    transform: rotate(45deg);
+}
+
+.sgi-brand-text {
+    transform: translateY(-1px);
+}
+
+.sgi-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sgi-icon-btn {
+    width: 38px;
+    height: 38px;
+    border: 0;
+    background: transparent;
+    color: var(--sgi-text);
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+    .sgi-icon-btn:hover {
+        background: rgba(255,255,255,.08);
+    }
+
+.sgi-bell {
+    position: relative;
+}
+
+.sgi-dot {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff5252;
+}
+
+.sgi-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--sgi-text);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 12px;
+}
+
+    .sgi-user-btn:hover {
+        background: rgba(255,255,255,.08);
+    }
+
+.sgi-user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.10);
+    display: grid;
+    place-items: center;
+}
+
+.sgi-user-name {
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* ====== LAYOUT ====== */
+.sgi-layout {
+    display: flex;
+    min-height: calc(100vh - 56px);
+}
+
+/* ====== SIDEBAR ====== */
+.sgi-sidebar {
+    width: 260px;
+    background: var(--sgi-bg);
+    color: var(--sgi-text);
+    padding: 14px 10px;
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow: auto;
+}
+
+.sgi-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sgi-section {
+    margin-top: 10px;
+}
+
+.sgi-section-title {
+    font-size: 12px;
+    color: var(--sgi-muted);
+    padding: 10px 12px 6px;
+    text-transform: none;
+    letter-spacing: .2px;
+}
+
+.sgi-item, .sgi-item-collapsible {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--sgi-text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+    .sgi-item i, .sgi-item-collapsible i {
+        width: 18px;
+        text-align: center;
+    }
+
+    .sgi-item:hover, .sgi-item-collapsible:hover {
+        background: rgba(255,255,255,.08);
+    }
+
+.sgi-subitem {
+    display: block;
+    color: var(--sgi-muted);
+    text-decoration: none;
+    padding: 8px 16px 8px 44px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+    .sgi-subitem:hover {
+        background: rgba(255,255,255,.06);
+        color: var(--sgi-text);
+    }
+
+.sgi-chevron {
+    margin-left: auto;
+    opacity: .75;
+    font-size: 12px;
+}
+
+/* ====== COLLAPSED SIDEBAR ====== */
+body.sgi-collapsed .sgi-sidebar {
+    width: 78px;
+}
+
+body.sgi-collapsed .sgi-item span,
+body.sgi-collapsed .sgi-subitem,
+body.sgi-collapsed .sgi-section-title,
+body.sgi-collapsed .sgi-chevron {
+    display: none;
+}
+
+body.sgi-collapsed .sgi-item, body.sgi-collapsed .sgi-item-collapsible {
+    justify-content: center;
+}
+
+/* ====== CONTENT ====== */
+.sgi-content {
+    flex: 1;
+    padding: 18px 18px 28px;
+}
+
+/* ====== PAGE HEADER LIKE PHOTO ====== */
+.sgi-page-title {
+    font-size: 34px;
+    font-weight: 500;
+    margin: 8px 0 6px;
+    color: #2f3a3b;
+}
+
+.sgi-hr {
+    height: 1px;
+    background: var(--sgi-line);
+    border: 0;
+    margin: 10px 0 16px;
+}
+
+/* ====== ACTION BAR (Agregar + filtros + buscador) ====== */
+.sgi-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.btn-sgi {
+    background: var(--sgi-accent);
+    border: 0;
+    color: #fff;
+    font-weight: 700;
+    padding: 9px 16px;
+    border-radius: 10px;
+}
+
+    .btn-sgi:hover {
+        filter: brightness(.95);
+    }
+
+.sgi-actions .form-select,
+.sgi-actions .form-control {
+    border-radius: 10px;
+    border: 1px solid #d9e2e3;
+    height: 38px;
+}
+
+/* ====== DATATABLES LOOK ====== */
+table.dataTable thead th {
+    background: #173f3e !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    border-bottom: 0 !important;
+}
+
+.table-bordered > :not(caption) > * {
+    border-color: #e3eaeb;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: 8px !important;
+    padding: .2rem .6rem !important;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border-radius: 10px;
+    border: 1px solid #d9e2e3;
+    height: 38px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border-radius: 10px;
+    border: 1px solid #d9e2e3;
+    height: 38px;
+}
+/* que el contenido no quede "tan arriba" */
+.sgi-content {
+    padding-top: 22px;
+}
+
+/* acciones arriba alineadas */
+.sgi-actions {
+    gap: 8px;
+}
+
+/* tabla más compacta tipo sistema */
+.table td, .table th {
+    padding: .45rem .6rem;
+}
+
+/* que los links no se pongan morados */
+a {
+    text-decoration: none;
+}
+/* Paginación DataTables sin bullets */
+.dataTables_wrapper .dataTables_paginate ul.pagination {
+    margin: 0;
+}
+
+.dataTables_wrapper .dataTables_paginate .pagination {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .page-item .page-link {
+    border-radius: 10px;
+    padding: .25rem .65rem;
+}
