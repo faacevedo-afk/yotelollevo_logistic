@@ -4,46 +4,65 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="card-title">Rutas</h3>
+            <a href="@Url.Action("Create", "Rutas")" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-eye"></i> Agregar Nueva Ruta
+            </a>
+        </div>
+    </div>
+    <div class="container-fluid mt-4">
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            Nombre Repartidor
-        </th>
-        <th>
-            Estado Ruta
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FechaRuta)
-        </th>
-        <th></th>
-    </tr>
+        <div class="card-header">
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Repartidor.Nombre)
-            @Html.DisplayFor(modelItem => item.Repartidor.ApellidoPaterno)
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>
+                                Nombre Repartidor
+                            </th>
+                            <th>
+                                Estado Ruta
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.FechaRuta)
+                            </th>
+                            <th>
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
 
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Estado.Tipo)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FechaRuta)
-        </td>
-        <td>
-            @Html.ActionLink("Editar Ruta", "Edit", new { id = item.IdRuta }) |
-            @Html.ActionLink("Detalle Ruta", "Details", new { id = item.IdRuta }) |
-            @Html.ActionLink("Elimina Ruta", "Delete", new { id = item.IdRuta })|
-            @Html.ActionLink("Asignar pedidos", "Asignar", new { id = item.IdRuta }) |
-
-        </td>
-    </tr>
-}
-
-</table>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Repartidor.Nombre)
+                                @Html.DisplayFor(modelItem => item.Repartidor.ApellidoPaterno)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Estado.Nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FechaRuta)
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    @Html.ActionLink("Editar Ruta", "Edit", new { id = item.IdRuta }, new { @class = "btn btn-primary btn-sm me-1" })
+                                    @Html.ActionLink("Detalle Ruta", "Details", new { id = item.IdRuta }, new { @class = "btn btn-sm btn-primary me-1" })
+                                    @Html.ActionLink("Asignar pedidos", "Asignar", new { id = item.IdRuta }, new { @class = "btn btn-sm btn-primary me-1" })
+                                    @Html.ActionLink("Eliminar Ruta", "Delete", new { id = item.IdRuta }, new { @class = "btn btn-sm btn-primary", onclick = "return confirm('¿Estás seguro de eliminar esta ruta?');" })
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

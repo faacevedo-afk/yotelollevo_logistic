@@ -18,7 +18,6 @@
             <PropertyRef Name="IdEstado" />
           </Key>
           <Property Name="IdEstado" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Tipo" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Paquete">
@@ -112,6 +111,8 @@
           <Property Name="FechaCreacion" Type="datetime2" Precision="0" Nullable="false" />
           <Property Name="IdTienda" Type="int" />
           <Property Name="IdRepartidor" Type="int" />
+          <Property Name="PasswordHash" Type="varbinary" MaxLength="64" />
+          <Property Name="PasswordSalt" Type="varbinary" MaxLength="16" />
         </EntityType>
         <Association Name="FK_Comuna_Region">
           <End Role="Region" Type="Self.Region" Multiplicity="1" />
@@ -353,7 +354,6 @@
             <PropertyRef Name="IdEstado" />
           </Key>
           <Property Name="IdEstado" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Tipo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Paquete" Relationship="Self.FK_Paquete_EstadoPedido" FromRole="Estado" ToRole="Paquete" />
           <NavigationProperty Name="Ruta" Relationship="Self.FK_Ruta_EstadoRuta" FromRole="Estado" ToRole="Ruta" />
@@ -470,6 +470,8 @@
           <Property Name="IdRepartidor" Type="Int32" />
           <NavigationProperty Name="Repartidor" Relationship="LogisticaDBModel.FK_Usuario_Repartidor" FromRole="Usuario" ToRole="Repartidor" />
           <NavigationProperty Name="Tienda" Relationship="LogisticaDBModel.FK_Usuario_Tienda" FromRole="Usuario" ToRole="Tienda" />
+          <Property Name="PasswordHash" Type="Binary" MaxLength="64" FixedLength="false" />
+          <Property Name="PasswordSalt" Type="Binary" MaxLength="16" FixedLength="false" />
         </EntityType>
         <Association Name="FK_Comuna_Region">
           <End Role="Region" Type="Self.Region" Multiplicity="1" />
@@ -710,7 +712,6 @@
             <EntityTypeMapping TypeName="LogisticaDBModel.Estado">
               <MappingFragment StoreEntitySet="Estado">
                 <ScalarProperty Name="IdEstado" ColumnName="IdEstado" />
-                <ScalarProperty Name="Tipo" ColumnName="Tipo" />
                 <ScalarProperty Name="Nombre" ColumnName="Nombre" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -803,6 +804,8 @@
           <EntitySetMapping Name="Usuario">
             <EntityTypeMapping TypeName="LogisticaDBModel.Usuario">
               <MappingFragment StoreEntitySet="Usuario">
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
                 <ScalarProperty Name="IdRepartidor" ColumnName="IdRepartidor" />
                 <ScalarProperty Name="IdTienda" ColumnName="IdTienda" />
                 <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />

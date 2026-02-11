@@ -23,6 +23,8 @@ namespace yotelollevo
         public System.DateTime FechaCreacion { get; set; }
         public Nullable<int> IdTienda { get; set; }
         public Nullable<int> IdRepartidor { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
     
         public virtual Rol Rol { get; set; }
         public virtual Repartidor Repartidor { get; set; }
