@@ -180,13 +180,36 @@
     <Compile Include="RutaPaquete.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Security\PasswordHasher.cs" />
     <Compile Include="Tienda.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Usuario.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="ViewsModel\AsignarPaquetesVM.cs" />
+    <Compile Include="Constants\EstadoNames.cs" />
+    <Compile Include="Constants\RoleNames.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Infrastructure\UserSession.cs" />
+    <Compile Include="Infrastructure\LoginThrottle.cs" />
+    <Compile Include="Models\Metadata\PaqueteMetadata.cs" />
+    <Compile Include="Models\Metadata\RutaMetadata.cs" />
+    <Compile Include="Models\Metadata\TiendaMetadata.cs" />
+    <Compile Include="Models\Metadata\RepartidorMetadata.cs" />
+    <Compile Include="Models\Metadata\UsuarioMetadata.cs" />
+    <Compile Include="Services\IEstadoService.cs" />
+    <Compile Include="Services\EstadoService.cs" />
+    <Compile Include="Services\IPaqueteService.cs" />
+    <Compile Include="Services\PaqueteService.cs" />
+    <Compile Include="Services\IRutaService.cs" />
+    <Compile Include="Services\RutaService.cs" />
+    <Compile Include="Services\IDashboardService.cs" />
+    <Compile Include="Services\DashboardService.cs" />
+    <Compile Include="Services\IDropdownService.cs" />
+    <Compile Include="Services\DropdownService.cs" />
+    <Compile Include="ViewModels\AsignarPaquetesVM.cs" />
+    <Compile Include="ViewModels\HomeIndexViewModel.cs" />
+    <Compile Include="ViewModels\MiRutaInicioVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -302,10 +325,11 @@
     <Content Include="Views\Rutas\Details.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Usuarios\Index.cshtml" />
+    <Content Include="Views\Rutas\Inicio.cshtml" />
+    <Content Include="Views\Migracion\MigrarPasswords.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

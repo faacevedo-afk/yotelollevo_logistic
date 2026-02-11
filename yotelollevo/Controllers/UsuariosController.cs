@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-
+using yotelollevo.Constants;
+using yotelollevo.Filter;
 
 namespace yotelollevo.Controllers
 {
-    [RoleAuthorize("ADMIN")]
-    public class UsuariosController : Controller
+    [RoleAuthorize(RoleNames.Admin)]
+    public class UsuariosController : BaseController
     {
         private LogisticaDBEntities db = new LogisticaDBEntities();
 
@@ -26,6 +24,12 @@ namespace yotelollevo.Controllers
                 .ToList();
 
             return View(usuarios);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) db.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

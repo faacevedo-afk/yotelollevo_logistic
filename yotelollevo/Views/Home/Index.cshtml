@@ -1,11 +1,249 @@
-﻿@{
+﻿@model yotelollevo.ViewModels.HomeIndexViewModel
+
+
+@{
     ViewBag.Title = "Home Page";
+    var userSession = new yotelollevo.Infrastructure.HttpUserSession(Session);
+    var rol = userSession.Rol;
+    var userName = !string.IsNullOrEmpty(userSession.UserName) ? userSession.UserName
+                 : (!string.IsNullOrEmpty(rol) ? rol : "Invitado");
+
+    bool isAdmin = userSession.IsAdmin;
+    bool isTienda = userSession.IsTienda;
+    bool isRepartidor = userSession.IsRepartidor;
 }
+<h4 style="margin-bottom: 20px; color: #2d3748;">Dashboard</h4>
+<div style="padding: 20px; background: #f8f9fa; border-radius: 12px; margin: 20px 0; display:flex; place-content:center;
+align-items:center;">
+    <div class="kpi-row">
+        <div class="kpi-box">
+            <div class="kpi-icon blue">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <div class="kpi-text">
+                <p class="kpi-number">@Model.TotalPaquetes</p>
+                <p class="kpi-label">Todos</p>
+            </div>
+        </div>
 
-<h2>Prueba de conexión a la Base de Datos</h2>
+        <div class="kpi-box">
+            <div class="kpi-icon blue">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <div class="kpi-text">
+                <p class="kpi-number">@Model.TotalTiendas</p>
+                <p class="kpi-label">En Bodega</p>
+            </div>
+        </div>
 
-<ul>
-    <li>Total de tiendas: <strong>@ViewBag.TotalTiendas</strong></li>
-    <li>Total de paquetes: <strong>@ViewBag.TotalPaquetes</strong></li>
-    <li>Total de rutas: <strong>@ViewBag.TotalRutas</strong></li>
-</ul>
+
+        <div class="kpi-box">
+            <div class="kpi-icon green">
+                <i class="fas fa-route"></i>
+            </div>
+            <div class="kpi-text">
+                <p class="kpi-number">@Model.TotalRutas</p>
+                <p class="kpi-label">En Ruta</p>
+            </div>
+        </div>
+
+
+        <div class="kpi-box">
+            <div class="kpi-icon cyan">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="kpi-text">
+                <p class="kpi-number">@ViewBag.TotalRutas</p>
+                <p class="kpi-label">Entregados</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div style="padding: 20px; background: #f8f9fa; border-radius: 12px; margin: 20px 0; display:flex; place-content:center;
+align-items:center;">
+
+    <!-- Barra de búsqueda -->
+    <div class="search-container">
+        <div class="search-wrapper">
+            <!-- Campo de búsqueda -->
+            <input type="text"
+                   class="search-input"
+                   placeholder="Buscar paquetes, rutas, destinatarios..."
+                   id="searchInput"
+                   onkeyup="filtrarTabla()">
+
+            <!-- Botón de buscar -->
+            <button class="search-btn" onclick="buscar()">
+                <i class="fas fa-search"></i>
+            </button>
+
+            <!-- Botón de limpiar -->
+            <button class="search-clear" onclick="limpiarBusqueda()" title="Limpiar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Filtros adicionales (opcional) -->
+        <div class="search-filters">
+            <select class="filter-select" id="filterEstado">
+                <option value="">Todos los estados</option>
+                <option value="En Bodega">En Bodega</option>
+                <option value="En Ruta">En Ruta</option>
+                <option value="Entregado">Entregado</option>
+                <option value="Cancelado">Cancelado</option>
+            </select>
+
+            <select class="filter-select" id="filterFecha">
+                <option value="">Todas las fechas</option>
+                <option value="hoy">Hoy</option>
+                <option value="semana">Esta semana</option>
+                <option value="mes">Este mes</option>
+            </select>
+
+            <button class="filter-btn">
+                <i class="fas fa-filter"></i>
+                Aplicar filtros
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        <div class="d-flex justify-content-between align-items-center">
+
+            <a href="@Url.Action("Index", "Paquetes")" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-eye"></i> Ver Todos
+            </a>
+        </div>
+    </div>
+
+    <div class="container-fluid mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Últimos Paquetes Registrados</h3>
+            </div>
+            <div class="card-body">
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @TempData["Error"]
+                    </div>
+                }
+
+                <table class="table table-striped table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID Paquete</th>
+                            <th>Destinatario</th>
+                            <th>Tienda</th>
+                            <th>Dirección</th>
+                            <th>Estado</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Paquetes)
+                        {
+                            <tr>
+                                <td>@item.IdPaquete</td>
+                                <td>@item.Destinatario</td>
+                                <td>@item.TiendaNombre</td>
+                                <td>@item.DireccionEntrega</td>
+                                <td>@item.EstadoNombre</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    // Mostrar/ocultar botón de limpiar
+    document.getElementById('searchInput').addEventListener('input', function () {
+        const clearBtn = document.querySelector('.search-clear');
+        if (this.value.length > 0) {
+            clearBtn.classList.add('visible');
+        } else {
+            clearBtn.classList.remove('visible');
+        }
+        filtrarTabla();
+    });
+
+    // Función de buscar
+    function buscar() {
+        const termino = document.getElementById('searchInput').value.toLowerCase();
+        const filtroEstado = document.getElementById('filterEstado').value;
+        const filtroFecha = document.getElementById('filterFecha').value;
+
+        filtrarTabla(termino, filtroEstado, filtroFecha);
+    }
+
+    // Función para limpiar búsqueda
+    function limpiarBusqueda() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('filterEstado').value = '';
+        document.getElementById('filterFecha').value = '';
+        document.querySelector('.search-clear').classList.remove('visible');
+        filtrarTabla();
+    }
+
+    // Función para filtrar tabla (ajusta según tu tabla)
+    function filtrarTabla(termino = '', estado = '', fecha = '') {
+        const tabla = document.querySelector('table');
+        if (!tabla) return;
+
+        const filas = tabla.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+        for (let i = 0; i < filas.length; i++) {
+            const fila = filas[i];
+            const textoFila = fila.textContent.toLowerCase();
+
+            let mostrarFila = true;
+
+            // Filtrar por término de búsqueda
+            if (termino && !textoFila.includes(termino)) {
+                mostrarFila = false;
+            }
+
+            // Filtrar por estado
+            if (estado && !textoFila.includes(estado.toLowerCase())) {
+                mostrarFila = false;
+            }
+
+            // Mostrar u ocultar fila
+            fila.style.display = mostrarFila ? '' : 'none';
+        }
+    }
+
+    // Permitir búsqueda con Enter
+    document.getElementById('searchInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            buscar();
+        }
+    });
+</script>

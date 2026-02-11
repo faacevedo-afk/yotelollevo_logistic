@@ -1,0 +1,70 @@
+﻿@model yotelollevo.ViewModels.MiRutaInicioVM
+
+@{
+    ViewBag.Title = "Mi Ruta";
+}
+
+<h2>Mi Ruta</h2>
+
+@if (Model.RutaActiva != null)
+{
+    <div class="alert alert-success d-flex justify-content-between align-items-center">
+        <div>
+            <strong>Ruta activa:</strong>
+            Ruta #@Model.RutaActiva.IdRuta - @Model.RutaActiva.FechaRuta.ToString("dd-MM-yyyy")
+        </div>
+
+        <a class="btn btn-primary"
+           href="@Url.Action("Trabajar", "Rutas", new { id = Model.RutaActiva.IdRuta })">
+            Trabajar en ruta
+        </a>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        No tienes una ruta activa actualmente.
+    </div>
+}
+
+<hr />
+
+<h3>Rutas terminadas</h3>
+
+@if (Model.Historial == null || !Model.Historial.Any())
+{
+    <div class="alert alert-warning">
+        Aún no tienes rutas terminadas.
+    </div>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID Ruta</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.Historial)
+            {
+                <tr>
+                    <td>@r.IdRuta</td>
+                    <td>@r.FechaRuta.ToString("dd-MM-yyyy")</td>
+                    <td>@r.Estado?.Nombre</td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-sm btn-outline-secondary"
+                           href="@Url.Action("Details", "Rutas", new { id = r.IdRuta })">
+                            Ver detalle
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+

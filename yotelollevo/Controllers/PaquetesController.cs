@@ -1,173 +1,152 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
+using System;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using yotelollevo;
+using yotelollevo.Constants;
+using yotelollevo.Filter;
+using yotelollevo.Services;
 
 namespace yotelollevo.Controllers
 {
-    [RoleAuthorize("ADMIN", "TIENDA")]
-    public class PaquetesController : Controller
+    [RoleAuthorize(RoleNames.Admin, RoleNames.Tienda)]
+    public class PaquetesController : BaseController
     {
         private LogisticaDBEntities db = new LogisticaDBEntities();
+        private readonly IPaqueteService _paqueteService;
+        private readonly IEstadoService _estadoService;
+        private readonly IDropdownService _dropdownService;
 
-        // GET: Paquetes
+        public PaquetesController()
+        {
+            _paqueteService = new PaqueteService(db);
+            _estadoService = new EstadoService(db);
+            _dropdownService = new DropdownService(db);
+        }
+
         public ActionResult Index()
         {
-            // Traer paquetes con relaciones
-            var paquetes = db.Paquete
-                .Include(p => p.Tienda)
-                .Include(p => p.Comuna)
-                .Include(p => p.Estado)
-                .ToList();
+            int? tiendaFilter = CurrentUser.IsTienda ? CurrentUser.IdTienda : (int?)null;
+            var paquetes = _paqueteService.GetAll(tiendaFilter);
 
-            // Si tu tabla Estado no tiene Tipo, borra el Where
-            var tiendas = db.Tienda
-                .OrderBy(t => t.Nombre)
-                .Select(t => t.Nombre)
-                .Distinct()
-                .ToList();
-
-            var estados = db.Estado
-                //.Where(e => e.Tipo == "Paquete")  // comenta si no existe Tipo
-                .OrderBy(e => e.Nombre)
-                .Select(e => e.Nombre)
-                .Distinct()
-                .ToList();
-
-            ViewBag.Tiendas = tiendas;
-            ViewBag.Estados = estados;
+            ViewBag.Tiendas = _paqueteService.GetTiendaNames();
+            ViewBag.Estados = _paqueteService.GetEstadoPedidoNames();
 
             return View(paquetes);
         }
 
-
-
-        // GET: Paquetes/Details/5
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Paquete paquete = db.Paquete.Find(id);
-            if (paquete == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var paquete = _paqueteService.GetByIdWithIncludes(id.Value);
+            if (paquete == null) return HttpNotFound();
+
+            if (CurrentUser.IsTienda && paquete.IdTienda != CurrentUser.IdTienda)
+                return new HttpStatusCodeResult(403);
+
             return View(paquete);
         }
 
-        // GET: Paquetes/Create
         public ActionResult Create()
         {
-            ViewBag.IdTienda = new SelectList(db.Tienda, "IdTienda", "Nombre");
-            ViewBag.IdComunaEntrega = new SelectList(db.Comuna, "IdComuna", "Nombre");
-
-            // Estados tipo Pedido
-            ViewBag.IdEstadoPedido = new SelectList(
-                db.Estado.Where(e => e.Tipo == "Pedido"),
-                "IdEstado",
-                "Nombre"
-            );
-
+            CargarCombos();
             return View();
         }
 
-
-        // POST: Paquetes/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "IdPaquete,IdTienda,NombreDestinatario,DireccionEntrega,IdComunaEntrega,CelularDestinatario,Comentario,IdEstadoPedido,FechaCreacion")] Paquete paquete)
         {
+            if (CurrentUser.IsTienda && CurrentUser.IdTienda.HasValue)
+                paquete.IdTienda = CurrentUser.IdTienda.Value;
+
+            if (paquete.FechaCreacion == default(DateTime))
+                paquete.FechaCreacion = DateTime.Now;
+
+            if (paquete.IdEstadoPedido <= 0 || !_estadoService.IsValidEstadoPedido(paquete.IdEstadoPedido))
+                ModelState.AddModelError("IdEstadoPedido", "Debes seleccionar un estado de pedido valido.");
+
             if (ModelState.IsValid)
             {
-                db.Paquete.Add(paquete);
-                db.SaveChanges();
+                _paqueteService.Create(paquete);
                 return RedirectToAction("Index");
             }
 
-            ViewBag.IdTienda = new SelectList(db.Tienda, "IdTienda", "Nombre", paquete.IdTienda);
-            ViewBag.IdComunaEntrega = new SelectList(db.Comuna, "IdComuna", "Nombre", paquete.IdComunaEntrega);
-            ViewBag.IdEstadoPedido = new SelectList(db.Estado.Where(e => e.Tipo == "Pedido"), "IdEstado", "Nombre", paquete.IdEstadoPedido);
+            CargarCombos(paquete);
             return View(paquete);
         }
 
-        // GET: Paquetes/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Paquete paquete = db.Paquete.Find(id);
-            if (paquete == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.IdComunaEntrega = new SelectList(db.Comuna, "IdComuna", "Nombre", paquete.IdComunaEntrega);
-            ViewBag.IdEstadoPedido = new SelectList(db.Estado, "IdEstado", "Tipo", paquete.IdEstadoPedido);
-            ViewBag.IdTienda = new SelectList(db.Tienda, "IdTienda", "Nombre", paquete.IdTienda);
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var paquete = _paqueteService.GetById(id.Value);
+            if (paquete == null) return HttpNotFound();
+
+            if (CurrentUser.IsTienda && paquete.IdTienda != CurrentUser.IdTienda)
+                return new HttpStatusCodeResult(403);
+
+            CargarCombos(paquete);
             return View(paquete);
         }
 
-        // POST: Paquetes/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "IdPaquete,IdTienda,NombreDestinatario,DireccionEntrega,IdComunaEntrega,CelularDestinatario,Comentario,IdEstadoPedido,FechaCreacion")] Paquete paquete)
         {
+            if (CurrentUser.IsTienda && paquete.IdTienda != CurrentUser.IdTienda)
+                return new HttpStatusCodeResult(403);
+
+            if (paquete.IdEstadoPedido <= 0 || !_estadoService.IsValidEstadoPedido(paquete.IdEstadoPedido))
+                ModelState.AddModelError("IdEstadoPedido", "Debes seleccionar un estado de pedido valido.");
+
             if (ModelState.IsValid)
             {
-                db.Entry(paquete).State = EntityState.Modified;
-                db.SaveChanges();
+                _paqueteService.Update(paquete);
                 return RedirectToAction("Index");
             }
-            ViewBag.IdComunaEntrega = new SelectList(db.Comuna, "IdComuna", "Nombre", paquete.IdComunaEntrega);
-            ViewBag.IdEstadoPedido = new SelectList(db.Estado, "IdEstado", "Tipo", paquete.IdEstadoPedido);
-            ViewBag.IdTienda = new SelectList(db.Tienda, "IdTienda", "Nombre", paquete.IdTienda);
+
+            CargarCombos(paquete);
             return View(paquete);
         }
 
-        // GET: Paquetes/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Paquete paquete = db.Paquete.Find(id);
-            if (paquete == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var paquete = _paqueteService.GetByIdWithIncludes(id.Value);
+            if (paquete == null) return HttpNotFound();
+
+            if (CurrentUser.IsTienda && paquete.IdTienda != CurrentUser.IdTienda)
+                return new HttpStatusCodeResult(403);
+
             return View(paquete);
         }
 
-        // POST: Paquetes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Paquete paquete = db.Paquete.Find(id);
-            db.Paquete.Remove(paquete);
-            db.SaveChanges();
+            if (CurrentUser.IsTienda)
+            {
+                var paquete = _paqueteService.GetById(id);
+                if (paquete != null && paquete.IdTienda != CurrentUser.IdTienda)
+                    return new HttpStatusCodeResult(403);
+            }
+
+            _paqueteService.Delete(id);
             return RedirectToAction("Index");
+        }
+
+        private void CargarCombos(Paquete paquete = null)
+        {
+            ViewBag.IdTienda = _dropdownService.Tiendas(paquete?.IdTienda);
+            ViewBag.IdComunaEntrega = _dropdownService.Comunas(paquete?.IdComunaEntrega);
+            ViewBag.IdEstadoPedido = _dropdownService.EstadosPedido(paquete?.IdEstadoPedido);
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            if (disposing) db.Dispose();
             base.Dispose(disposing);
         }
     }

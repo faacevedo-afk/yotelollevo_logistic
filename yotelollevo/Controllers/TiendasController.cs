@@ -1,51 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using yotelollevo;
+using yotelollevo.Constants;
+using yotelollevo.Filter;
+using yotelollevo.Services;
 
 namespace yotelollevo.Controllers
 {
-    public class TiendasController : Controller
+    [RoleAuthorize(RoleNames.Admin)]
+    public class TiendasController : BaseController
     {
         private LogisticaDBEntities db = new LogisticaDBEntities();
+        private readonly IDropdownService _dropdownService;
 
-        // GET: Tiendas
-        public ActionResult Index()
+        public TiendasController()
         {
-            var tienda = db.Tienda.Include(t => t.Comuna);
-            return View(tienda.ToList());
+            _dropdownService = new DropdownService(db);
         }
 
-        // GET: Tiendas/Details/5
+        public ActionResult Index()
+        {
+            var tiendas = db.Tienda
+                .Include(t => t.Comuna)
+                .OrderBy(t => t.Nombre)
+                .ToList();
+
+            return View(tiendas);
+        }
+
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Tienda tienda = db.Tienda.Find(id);
-            if (tienda == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var tienda = db.Tienda
+                .Include(t => t.Comuna)
+                .FirstOrDefault(t => t.IdTienda == id);
+
+            if (tienda == null) return HttpNotFound();
+
             return View(tienda);
         }
 
-        // GET: Tiendas/Create
         public ActionResult Create()
         {
-            ViewBag.IdComuna = new SelectList(db.Comuna, "IdComuna", "Nombre");
+            ViewBag.IdComuna = _dropdownService.Comunas();
             return View();
         }
 
-        // POST: Tiendas/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "IdTienda,Nombre,Correo,Direccion,Telefono,IdComuna,Activa")] Tienda tienda)
@@ -58,38 +61,24 @@ namespace yotelollevo.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.IdComuna = new SelectList(db.Comuna, "IdComuna", "Nombre", tienda.IdComuna);
+            ViewBag.IdComuna = _dropdownService.Comunas(tienda.IdComuna);
             return View(tienda);
         }
 
-
-        // GET: Tiendas/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            Tienda tienda = db.Tienda.Find(id);
-            if (tienda == null)
-            {
-                return HttpNotFound();
-            }
+            var tienda = db.Tienda.Find(id);
+            if (tienda == null) return HttpNotFound();
 
-            // Cargar comunas y dejar seleccionada la actual
-            ViewBag.IdComuna = new SelectList(db.Comuna, "IdComuna", "Nombre", tienda.IdComuna);
-
+            ViewBag.IdComuna = _dropdownService.Comunas(tienda.IdComuna);
             return View(tienda);
         }
 
-
-        // POST: Tiendas/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "IdTienda,Nombre,Correo,Direccion,Telefono,IdComuna,Activa")] Tienda tienda)
+        public ActionResult Edit([Bind(Include = "IdTienda,Nombre,Correo,Direccion,Telefono,IdComuna,Activa,FechaCreacion")] Tienda tienda)
         {
             if (ModelState.IsValid)
             {
@@ -98,44 +87,39 @@ namespace yotelollevo.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Volver a cargar comunas si hay error
-            ViewBag.IdComuna = new SelectList(db.Comuna, "IdComuna", "Nombre", tienda.IdComuna);
+            ViewBag.IdComuna = _dropdownService.Comunas(tienda.IdComuna);
             return View(tienda);
         }
 
-
-        // GET: Tiendas/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Tienda tienda = db.Tienda.Find(id);
-            if (tienda == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var tienda = db.Tienda
+                .Include(t => t.Comuna)
+                .FirstOrDefault(t => t.IdTienda == id);
+
+            if (tienda == null) return HttpNotFound();
+
             return View(tienda);
         }
 
-        // POST: Tiendas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Tienda tienda = db.Tienda.Find(id);
-            db.Tienda.Remove(tienda);
-            db.SaveChanges();
+            var tienda = db.Tienda.Find(id);
+            if (tienda != null)
+            {
+                db.Tienda.Remove(tienda);
+                db.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            if (disposing) db.Dispose();
             base.Dispose(disposing);
         }
     }

@@ -1,40 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Web;
 using System.Web.Mvc;
+using yotelollevo.Filter;
+using yotelollevo.Services;
 
 namespace yotelollevo.Controllers
 {
-    public class HomeController : Controller
+    [RoleAuthorize]
+    public class HomeController : BaseController
     {
+        private LogisticaDBEntities db = new LogisticaDBEntities();
+        private readonly IDashboardService _dashboardService;
+
+        public HomeController()
+        {
+            _dashboardService = new DashboardService(db, new PaqueteService(db));
+        }
+
         public ActionResult Index()
         {
-            using (var db = new LogisticaDBEntities())
-            {
-                ViewBag.TotalTiendas = db.Tienda.Count();
-                ViewBag.TotalPaquetes = db.Paquete.Count();
-                ViewBag.TotalRutas = db.Ruta.Count();
-            }
-
-            return View();
+            var viewModel = _dashboardService.GetDashboardData();
+            return View(viewModel);
         }
 
-        public ActionResult About()
+        protected override void Dispose(bool disposing)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            if (disposing) db.Dispose();
+            base.Dispose(disposing);
         }
     }
 }
-
-

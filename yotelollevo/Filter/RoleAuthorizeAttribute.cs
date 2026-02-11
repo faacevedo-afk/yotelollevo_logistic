@@ -3,32 +3,35 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-public class RoleAuthorizeAttribute : AuthorizeAttribute
+namespace yotelollevo.Filter
 {
-    private readonly string[] roles;
-
-    public RoleAuthorizeAttribute(params string[] roles)
+    public class RoleAuthorizeAttribute : AuthorizeAttribute
     {
-        this.roles = roles ?? Array.Empty<string>();
-    }
+        private readonly string[] roles;
 
-    protected override bool AuthorizeCore(HttpContextBase httpContext)
-    {
-        var rol = httpContext.Session?["Rol"] as string;
-        if (string.IsNullOrEmpty(rol)) return false;
-
-        if (roles.Length == 0) return true;
-        return roles.Contains(rol, StringComparer.OrdinalIgnoreCase);
-    }
-
-    protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
-    {
-        if (filterContext.HttpContext.Session?["Rol"] == null)
+        public RoleAuthorizeAttribute(params string[] roles)
         {
-            filterContext.Result = new RedirectResult("~/Account/Login");
-            return;
+            this.roles = roles ?? Array.Empty<string>();
         }
 
-        filterContext.Result = new HttpStatusCodeResult(403);
+        protected override bool AuthorizeCore(HttpContextBase httpContext)
+        {
+            var rol = httpContext.Session?["Rol"] as string;
+            if (string.IsNullOrEmpty(rol)) return false;
+
+            if (roles.Length == 0) return true;
+            return roles.Contains(rol, StringComparer.OrdinalIgnoreCase);
+        }
+
+        protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+        {
+            if (filterContext.HttpContext.Session?["Rol"] == null)
+            {
+                filterContext.Result = new RedirectResult("~/Account/Login");
+                return;
+            }
+
+            filterContext.Result = new HttpStatusCodeResult(403);
+        }
     }
 }
