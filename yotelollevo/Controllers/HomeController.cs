@@ -12,7 +12,7 @@ namespace yotelollevo.Controllers
 
         public HomeController()
         {
-            _dashboardService = new DashboardService(db, new PaqueteService(db));
+            _dashboardService = new DashboardService(db, new PaqueteService(db), new EstadoService(db));
         }
 
         public ActionResult Index()

@@ -5,9 +5,9 @@ namespace yotelollevo.ViewModels
     public class HomeIndexViewModel
     {
         public int TotalPaquetes { get; set; }
-        public int TotalPedidos { get; set; }
-        public int TotalRutas { get; set; }
-        public int TotalTiendas { get; set; }
+        public int EnBodega { get; set; }
+        public int EnRuta { get; set; }
+        public int Entregados { get; set; }
 
         public List<PaqueteViewModel> Paquetes { get; set; }
         public List<RepartidorRutaDTO> RepartidoresRutas { get; set; }

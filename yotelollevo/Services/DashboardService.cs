@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using yotelollevo.Constants;
 using yotelollevo.ViewModels;
 
 namespace yotelollevo.Services
@@ -9,21 +10,27 @@ namespace yotelollevo.Services
     {
         private readonly LogisticaDBEntities _db;
         private readonly IPaqueteService _paqueteService;
+        private readonly IEstadoService _estadoService;
 
-        public DashboardService(LogisticaDBEntities db, IPaqueteService paqueteService)
+        public DashboardService(LogisticaDBEntities db, IPaqueteService paqueteService, IEstadoService estadoService)
         {
             _db = db;
             _paqueteService = paqueteService;
+            _estadoService = estadoService;
         }
 
         public HomeIndexViewModel GetDashboardData()
         {
+            int idCreado = _estadoService.GetEstadoId(EstadoNames.Creado);
+            int idEntregado = _estadoService.GetEstadoId(EstadoNames.Entregado);
+            var idsRutaActiva = _estadoService.GetEstadoIds(EstadoNames.Planificada, EstadoNames.EnCurso);
+
             return new HomeIndexViewModel
             {
                 TotalPaquetes = _db.Paquete.Count(),
-                TotalPedidos = _db.Paquete.Count(),
-                TotalRutas = _db.Ruta.Count(),
-                TotalTiendas = _db.Tienda.Count(),
+                EnBodega = _db.Paquete.Count(p => p.IdEstadoPedido == idCreado),
+                EnRuta = _db.Ruta.Count(r => idsRutaActiva.Contains(r.IdEstadoRuta)),
+                Entregados = _db.Paquete.Count(p => p.IdEstadoPedido == idEntregado),
                 Paquetes = _paqueteService.GetRecentForDashboard(10),
                 RepartidoresRutas = GetRepartidoresRutas()
             };
