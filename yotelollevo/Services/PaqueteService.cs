@@ -60,9 +60,16 @@ namespace yotelollevo.Services
 
         public void Delete(int id)
         {
-            var paquete = _db.Paquete.Find(id);
+            var paquete = _db.Paquete
+                .Include(p => p.RutaPaquete)
+                .FirstOrDefault(p => p.IdPaquete == id);
             if (paquete != null)
             {
+                foreach (var rp in paquete.RutaPaquete.ToList())
+                {
+                    _db.RutaPaquete.Remove(rp);
+                }
+
                 _db.Paquete.Remove(paquete);
                 _db.SaveChanges();
             }

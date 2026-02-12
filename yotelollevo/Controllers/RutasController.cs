@@ -76,8 +76,14 @@ namespace yotelollevo.Controllers
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var ruta = _rutaService.GetById(id.Value);
+            var ruta = _rutaService.GetByIdWithEstadoAndRepartidor(id.Value);
             if (ruta == null) return HttpNotFound();
+
+            if (ruta.Estado != null && ruta.Estado.Nombre != EstadoNames.Planificada)
+            {
+                TempData["Error"] = "Solo se pueden editar rutas en estado Planificada.";
+                return RedirectToAction("Index");
+            }
 
             CargarCombos(ruta);
             return View(ruta);
@@ -86,8 +92,21 @@ namespace yotelollevo.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [RoleAuthorize(RoleNames.Admin)]
-        public ActionResult Edit([Bind(Include = "IdRuta,FechaRuta,IdRepartidor,IdEstadoRuta,Observacion,FechaCreacion")] Ruta ruta)
+        public ActionResult Edit([Bind(Include = "IdRuta,FechaRuta,IdRepartidor,IdEstadoRuta,Observacion")] Ruta ruta)
         {
+            var existing = _rutaService.GetByIdWithEstadoAndRepartidor(ruta.IdRuta);
+            if (existing != null && existing.Estado != null && existing.Estado.Nombre != EstadoNames.Planificada)
+            {
+                TempData["Error"] = "Solo se pueden editar rutas en estado Planificada.";
+                return RedirectToAction("Index");
+            }
+
+            if (existing != null)
+            {
+                ruta.FechaCreacion = existing.FechaCreacion;
+                _rutaService.Detach(existing);
+            }
+
             if (!_estadoService.IsValidEstadoRuta(ruta.IdEstadoRuta))
                 ModelState.AddModelError("IdEstadoRuta", "Debes seleccionar un estado valido para Ruta.");
 
@@ -152,6 +171,56 @@ namespace yotelollevo.Controllers
         {
             _rutaService.SaveAsignacion(IdRuta, PaquetesSeleccionados);
             return RedirectToAction("Details", new { id = IdRuta });
+        }
+
+        [RoleAuthorize(RoleNames.Repartidor)]
+        public ActionResult Trabajar(int? id)
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            int idRep = CurrentUser.IdRepartidor ?? 0;
+            if (idRep <= 0) return RedirectToAction("Login", "Account");
+
+            var ruta = _rutaService.GetById(id.Value);
+            if (ruta == null) return HttpNotFound();
+            if (ruta.IdRepartidor != idRep) return new HttpStatusCodeResult(403);
+
+            var vm = _rutaService.GetTrabajarData(id.Value);
+            if (vm == null) return HttpNotFound();
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RoleAuthorize(RoleNames.Repartidor)]
+        public ActionResult CambiarEstadoRuta(int IdRuta, string NuevoEstado)
+        {
+            int idRep = CurrentUser.IdRepartidor ?? 0;
+            if (idRep <= 0) return RedirectToAction("Login", "Account");
+
+            var ruta = _rutaService.GetById(IdRuta);
+            if (ruta == null) return HttpNotFound();
+            if (ruta.IdRepartidor != idRep) return new HttpStatusCodeResult(403);
+
+            _rutaService.CambiarEstadoRuta(IdRuta, NuevoEstado);
+            return RedirectToAction("Trabajar", new { id = IdRuta });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RoleAuthorize(RoleNames.Repartidor)]
+        public ActionResult MarcarEntrega(int IdRutaPaquete, string NuevoEstado, string Observacion, int IdRuta)
+        {
+            int idRep = CurrentUser.IdRepartidor ?? 0;
+            if (idRep <= 0) return RedirectToAction("Login", "Account");
+
+            var ruta = _rutaService.GetById(IdRuta);
+            if (ruta == null) return HttpNotFound();
+            if (ruta.IdRepartidor != idRep) return new HttpStatusCodeResult(403);
+
+            _rutaService.MarcarEntrega(IdRutaPaquete, NuevoEstado, Observacion);
+            return RedirectToAction("Trabajar", new { id = IdRuta });
         }
 
         private void CargarCombos(Ruta ruta = null)

@@ -23,6 +23,7 @@ namespace yotelollevo.Services
             return _db.Ruta
                 .Include(r => r.Estado)
                 .Include(r => r.Repartidor)
+                .Include(r => r.RutaPaquete)
                 .OrderByDescending(r => r.FechaCreacion)
                 .ToList();
         }
@@ -48,6 +49,7 @@ namespace yotelollevo.Services
             return _db.Ruta
                 .Include(r => r.Estado)
                 .Include(r => r.Repartidor)
+                .Include(r => r.RutaPaquete)
                 .FirstOrDefault(r => r.IdRuta == id);
         }
 
@@ -59,6 +61,11 @@ namespace yotelollevo.Services
             _db.SaveChanges();
         }
 
+        public void Detach(Ruta ruta)
+        {
+            _db.Entry(ruta).State = EntityState.Detached;
+        }
+
         public void Update(Ruta ruta)
         {
             _db.Entry(ruta).State = EntityState.Modified;
@@ -67,9 +74,21 @@ namespace yotelollevo.Services
 
         public void Delete(int id)
         {
-            var ruta = _db.Ruta.Find(id);
+            var ruta = _db.Ruta
+                .Include(r => r.RutaPaquete)
+                .FirstOrDefault(r => r.IdRuta == id);
             if (ruta != null)
             {
+                int idCreado = _estadoService.GetEstadoId(EstadoNames.Creado);
+                foreach (var rp in ruta.RutaPaquete.ToList())
+                {
+                    var paquete = _db.Paquete.Find(rp.IdPaquete);
+                    if (paquete != null)
+                        paquete.IdEstadoPedido = idCreado;
+
+                    _db.RutaPaquete.Remove(rp);
+                }
+
                 _db.Ruta.Remove(ruta);
                 _db.SaveChanges();
             }
@@ -183,6 +202,109 @@ namespace yotelollevo.Services
                         paquete.IdEstadoPedido = idAsignado;
                 }
             }
+
+            _db.SaveChanges();
+        }
+
+        public TrabajarRutaVM GetTrabajarData(int idRuta)
+        {
+            var ruta = _db.Ruta
+                .Include(r => r.Estado)
+                .Include(r => r.RutaPaquete.Select(rp => rp.Estado))
+                .Include(r => r.RutaPaquete.Select(rp => rp.Paquete))
+                .Include(r => r.RutaPaquete.Select(rp => rp.Paquete.Tienda))
+                .Include(r => r.RutaPaquete.Select(rp => rp.Paquete.Comuna))
+                .FirstOrDefault(r => r.IdRuta == idRuta);
+
+            if (ruta == null) return null;
+
+            string estadoNombre = ruta.Estado != null ? ruta.Estado.Nombre : "";
+            int idEntregado = _estadoService.GetEstadoId(EstadoNames.Entregado);
+            int idFallido = _estadoService.GetEstadoId(EstadoNames.Fallido);
+
+            return new TrabajarRutaVM
+            {
+                IdRuta = ruta.IdRuta,
+                FechaRuta = ruta.FechaRuta,
+                EstadoRuta = estadoNombre,
+                PuedeIniciar = estadoNombre == EstadoNames.Planificada,
+                PuedeCerrar = estadoNombre == EstadoNames.EnCurso,
+                Paquetes = ruta.RutaPaquete
+                    .OrderBy(rp => rp.OrdenEntrega)
+                    .Select(rp => new TrabajoPaqueteItem
+                    {
+                        IdRutaPaquete = rp.IdRutaPaquete,
+                        IdPaquete = rp.IdPaquete,
+                        OrdenEntrega = rp.OrdenEntrega,
+                        Destinatario = rp.Paquete.NombreDestinatario,
+                        Direccion = rp.Paquete.DireccionEntrega,
+                        Comuna = rp.Paquete.Comuna != null ? rp.Paquete.Comuna.Nombre : "",
+                        Tienda = rp.Paquete.Tienda != null ? rp.Paquete.Tienda.Nombre : "",
+                        EstadoEntrega = rp.Estado != null ? rp.Estado.Nombre : "",
+                        Observacion = rp.Observacion,
+                        HoraEvento = rp.HoraEvento,
+                        YaFinalizado = rp.IdEstadoEntrega == idEntregado || rp.IdEstadoEntrega == idFallido
+                    })
+                    .ToList()
+            };
+        }
+
+        public void CambiarEstadoRuta(int idRuta, string nuevoEstado)
+        {
+            var ruta = _db.Ruta
+                .Include(r => r.Estado)
+                .Include(r => r.RutaPaquete)
+                .FirstOrDefault(r => r.IdRuta == idRuta);
+            if (ruta == null) return;
+
+            string estadoActual = ruta.Estado != null ? ruta.Estado.Nombre : "";
+
+            bool transicionValida =
+                (estadoActual == EstadoNames.Planificada && nuevoEstado == EstadoNames.EnCurso) ||
+                (estadoActual == EstadoNames.EnCurso && nuevoEstado == EstadoNames.Cerrada);
+
+            if (!transicionValida) return;
+
+            int idNuevoEstado = _estadoService.GetEstadoId(nuevoEstado);
+            ruta.IdEstadoRuta = idNuevoEstado;
+
+            if (nuevoEstado == EstadoNames.EnCurso)
+            {
+                int idEnRuta = _estadoService.GetEstadoId(EstadoNames.EnRuta);
+                foreach (var rp in ruta.RutaPaquete)
+                {
+                    var paquete = _db.Paquete.Find(rp.IdPaquete);
+                    if (paquete != null)
+                        paquete.IdEstadoPedido = idEnRuta;
+                }
+            }
+
+            _db.SaveChanges();
+        }
+
+        public void MarcarEntrega(int idRutaPaquete, string nuevoEstado, string observacion)
+        {
+            var rp = _db.RutaPaquete
+                .Include(x => x.Estado)
+                .FirstOrDefault(x => x.IdRutaPaquete == idRutaPaquete);
+            if (rp == null) return;
+
+            int idEntregado = _estadoService.GetEstadoId(EstadoNames.Entregado);
+            int idFallido = _estadoService.GetEstadoId(EstadoNames.Fallido);
+
+            bool yaFinalizado = rp.IdEstadoEntrega == idEntregado || rp.IdEstadoEntrega == idFallido;
+            if (yaFinalizado) return;
+
+            if (nuevoEstado != EstadoNames.Entregado && nuevoEstado != EstadoNames.Fallido) return;
+
+            int idNuevoEstado = _estadoService.GetEstadoId(nuevoEstado);
+            rp.IdEstadoEntrega = idNuevoEstado;
+            rp.HoraEvento = DateTime.Now;
+            rp.Observacion = observacion;
+
+            var paquete = _db.Paquete.Find(rp.IdPaquete);
+            if (paquete != null)
+                paquete.IdEstadoPedido = idNuevoEstado;
 
             _db.SaveChanges();
         }

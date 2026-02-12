@@ -54,7 +54,7 @@ namespace yotelollevo.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "IdPaquete,IdTienda,NombreDestinatario,DireccionEntrega,IdComunaEntrega,CelularDestinatario,Comentario,IdEstadoPedido,FechaCreacion")] Paquete paquete)
+        public ActionResult Create([Bind(Include = "IdPaquete,IdTienda,NombreDestinatario,DireccionEntrega,IdComunaEntrega,CelularDestinatario,Comentario,FechaCreacion")] Paquete paquete)
         {
             if (CurrentUser.IsTienda && CurrentUser.IdTienda.HasValue)
                 paquete.IdTienda = CurrentUser.IdTienda.Value;
@@ -62,8 +62,8 @@ namespace yotelollevo.Controllers
             if (paquete.FechaCreacion == default(DateTime))
                 paquete.FechaCreacion = DateTime.Now;
 
-            if (paquete.IdEstadoPedido <= 0 || !_estadoService.IsValidEstadoPedido(paquete.IdEstadoPedido))
-                ModelState.AddModelError("IdEstadoPedido", "Debes seleccionar un estado de pedido valido.");
+            paquete.IdEstadoPedido = _estadoService.GetEstadoId(EstadoNames.Creado);
+            ModelState.Remove("IdEstadoPedido");
 
             if (ModelState.IsValid)
             {

@@ -1,80 +1,61 @@
 ﻿@model yotelollevo.Paquete
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Nuevo Paquete";
 }
 
-<h2>Create</h2>
+<div class="card shadow mt-3">
+    <div class="card-header bg-dark text-white">
+        <h3 class="card-title mb-0">Nuevo Paquete</h3>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Paquete</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdTienda, "IdTienda", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("IdTienda", null, htmlAttributes: new { @class = "form-control" })
+            <div class="mb-3">
+                <label class="form-label">Tienda</label>
+                @Html.DropDownList("IdTienda", null, "Seleccione una tienda", new { @class = "form-select" })
                 @Html.ValidationMessageFor(model => model.IdTienda, "", new { @class = "text-danger" })
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.NombreDestinatario, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="mb-3">
+                <label class="form-label">Nombre Destinatario</label>
                 @Html.EditorFor(model => model.NombreDestinatario, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.NombreDestinatario, "", new { @class = "text-danger" })
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DireccionEntrega, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="mb-3">
+                <label class="form-label">Dirección de Entrega</label>
                 @Html.EditorFor(model => model.DireccionEntrega, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.DireccionEntrega, "", new { @class = "text-danger" })
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdComunaEntrega, "IdComunaEntrega", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("IdComunaEntrega", null, htmlAttributes: new { @class = "form-control" })
+            <div class="mb-3">
+                <label class="form-label">Comuna de Entrega</label>
+                @Html.DropDownList("IdComunaEntrega", null, "Seleccione una comuna", new { @class = "form-select" })
                 @Html.ValidationMessageFor(model => model.IdComunaEntrega, "", new { @class = "text-danger" })
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.CelularDestinatario, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="mb-3">
+                <label class="form-label">Celular Destinatario</label>
                 @Html.EditorFor(model => model.CelularDestinatario, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.CelularDestinatario, "", new { @class = "text-danger" })
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Comentario, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="mb-3">
+                <label class="form-label">Comentario</label>
                 @Html.EditorFor(model => model.Comentario, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Comentario, "", new { @class = "text-danger" })
             </div>
-        </div>
 
-       
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Crear Paquete</button>
+                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-secondary ms-2" })
             </div>
-        </div>
+        }
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
 
 @section Scripts {
